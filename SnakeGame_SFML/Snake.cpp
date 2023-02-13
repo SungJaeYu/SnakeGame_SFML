@@ -6,13 +6,8 @@
 
 
 Snake::Snake(int l_blockSize)
+    : m_size(l_blockSize)
 {
-    m_size = l_blockSize;
-    m_dir = Direction::Left;
-    m_snakeBody.push_back(SnakeSegment(10, 10));
-    for (int i = 0; i < m_size-1; ++i) {
-        Extent();
-    }
     m_bodyRect.setSize(sf::Vector2f(m_size - 1, m_size - 1));
     Reset();
 }
@@ -113,8 +108,8 @@ void Snake::Extent()
         case Direction::Right:
             m_snakeBody.push_back(SnakeSegment(tail_head.position.x - 1, tail_head.position.y));
             break;
-        default:
 #ifndef NDEBUG
+        default:
             assert(0);
 #endif
         }
@@ -124,6 +119,19 @@ void Snake::Extent()
 
 void Snake::Reset()
 {
+    m_snakeBody.clear();
+
+    m_snakeBody.push_back(SnakeSegment(5, 7));
+    m_snakeBody.push_back(SnakeSegment(5, 6));
+    m_snakeBody.push_back(SnakeSegment(5, 5));
+
+    SetDirection(Direction::None);
+
+    m_speed = 15;
+    m_lives = 3;
+    m_score = 0;
+    m_lost = false;
+
 }
 
 void Snake::Move()
@@ -144,8 +152,8 @@ void Snake::Move()
     case Direction::Down:
         ++m_snakeBody[0].position.y;
         break;
-    default:
 #ifndef NDEBUG
+    default:
         assert(0);
 #endif
     }
@@ -206,4 +214,24 @@ void Snake::CheckCollision()
             break;
         }
     }
+}
+
+Direction Snake::GetPhysicalDirection()
+{
+    if (m_snakeBody.size() <= 1) {
+        return Direction::None;
+    }
+
+    SnakeSegment& head = m_snakeBody[0];
+    SnakeSegment& neck = m_snakeBody[1];
+
+    if (head.position.x == neck.position.x) {
+        return (head.position.y > neck.position.y? Direction::Down : Direction::Up);
+    }
+    else if (head.position.y == neck.position.y) {
+        return (head.position.x > neck.position.x ? Direction::Right : Direction::Left);
+    }
+
+    return Direction::None;
+
 }

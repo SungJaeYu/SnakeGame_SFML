@@ -38,7 +38,7 @@ public:
     void Render(sf::RenderWindow& l_window);
 private:
     void CheckCollision();
-
+    Direction GetPhysicalDirection();
     SnakeContainer m_snakeBody;
     int m_size;
     Direction m_dir;

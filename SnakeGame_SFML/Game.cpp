@@ -31,18 +31,10 @@ void Game::Update()
 {
     m_window.Update();
 
-    float timestep = 1.0f / m_snake.GetSpeed();
-
-    float currentTime = m_elapsed.asSeconds();
-
-    if (currentTime >= timestep) {
-        m_snake.Tick();
-        m_world.Update(m_snake);
-        currentTime -= timestep;
-        m_elapsed = sf::seconds(currentTime);
-        if (m_snake.HasLost()) {
-            m_snake.Reset();
-        }
+    m_snake.Tick();
+    m_world.Update(m_snake);
+    if (m_snake.HasLost()) {
+        m_snake.Reset();
     }
 }
 
